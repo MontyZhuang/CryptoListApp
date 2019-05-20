@@ -112,17 +112,37 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/ButtonLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/parent_layout"
-        app:layout_constraintHeight_percent="0.05">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/parent_layout">
+
+        <ImageButton
+            android:id="@+id/ListButton"
+
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="30dp"
+            android:backgroundTint="@color/darkGreen"
+            app:layout_constraintRight_toLeftOf="@id/PortfolioButton"
+            tools:layout_editor_absoluteY="0dp" />
 
 
+        <ImageButton
+            android:id="@+id/PortfolioButton"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            app:layout_constraintLeft_toRightOf="@id/ListButton"
+            tools:layout_editor_absoluteY="0dp" />
 
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 
 
