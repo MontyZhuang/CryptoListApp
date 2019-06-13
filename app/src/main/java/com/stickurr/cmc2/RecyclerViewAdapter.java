@@ -23,10 +23,12 @@ import org.w3c.dom.Text;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+// make a recyclerview adapter class that inherits methods from the default recycler adapter that uses the default viewholders to show each row
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
     private static final String TAG = "RecyclerViewAdapter";
 
+    // initialisation of all the variables
     private ArrayList<String> mIds;
     private ArrayList<String> mCoinNames;
     private ArrayList<String> mCoinPrices;
@@ -35,6 +37,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private Context mContext;
     private OnCoinListener monCoinListener;
 
+
+    // adds all the variables into the recycler view adapter
     public RecyclerViewAdapter(ArrayList<String> mCoinNames,
                                Context mContext,
                                ArrayList<String> mCoinPrices,
@@ -52,6 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.monCoinListener = monCoinListener;
     }
 
+    // we override the default oncreateviewholder, and add our xml to make it looks not like the default, then return this layout
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -60,6 +65,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return holder;
     }
 
+    // this method is ran every time an item in the list needs to be displayed so we can load data for the row
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, final int i) {
         Log.d(TAG, "onBindViewHolder is called");
@@ -105,6 +111,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
+    // we create a viewholder that inherits the methods of the default viewholder and adds a onclicklistener to it aswell
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView CoinName;

@@ -1,6 +1,7 @@
 package com.stickurr.cmc2;
 
 import android.content.Intent;
+import android.media.Image;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.Retrofit.Builder;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements OnCoinListener, OnRefreshListener {
@@ -54,7 +57,21 @@ public class MainActivity extends AppCompatActivity implements OnCoinListener, O
 
         //textView = findViewById(R.id.test);
 
-        Retrofit retrofit = new Retrofit.Builder()
+        ImageButton listbtn = findViewById(R.id.ListButton);
+        ImageButton portfoliobtn = findViewById(R.id.PortfolioButton);
+
+        portfoliobtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PortfolioActivity.class);
+                startActivity(intent);
+
+            }
+        });
+
+
+
+        Retrofit retrofit = new Builder()
                 .baseUrl("http://api.coingecko.com/api/v3/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -153,6 +170,10 @@ public class MainActivity extends AppCompatActivity implements OnCoinListener, O
                 // textView.setText(t.getMessage());
             }
         });
+
+    }
+
+    public void Get250CoinData() {
 
     }
 
