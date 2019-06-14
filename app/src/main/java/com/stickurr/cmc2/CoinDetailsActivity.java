@@ -70,7 +70,8 @@ public class CoinDetailsActivity extends AppCompatActivity {
         final TextView priceBTCText = findViewById(R.id.pricebtcContent);
         final TextView marketCapText = findViewById(R.id.marketcapContent);
         final TextView volumeText = findViewById(R.id.volumeContent);
-
+        final TextView percent24 = findViewById(R.id.percent24Content);
+        final TextView percent7d = findViewById(R.id.percent7dContent);
         Map<String, String> parameters = new HashMap<>();
         parameters.put("id", id);
         parameters.put("localisation", "false");
@@ -108,6 +109,11 @@ public class CoinDetailsActivity extends AppCompatActivity {
                 marketCapText.setText(response.body().getAsJsonObject().get("market_data").getAsJsonObject().get("market_cap").getAsJsonObject().get("usd").toString());
 
                 volumeText.setText(response.body().getAsJsonObject().get("market_data").getAsJsonObject().get("total_volume").getAsJsonObject().get("usd").toString());
+
+                percent24.setText(response.body().getAsJsonObject().get("market_data").getAsJsonObject().get("price_change_percentage_24h").toString());
+
+                percent7d.setText(response.body().getAsJsonObject().get("market_data").getAsJsonObject().get("price_change_percentage_7d").toString());
+
             }
 
             @Override

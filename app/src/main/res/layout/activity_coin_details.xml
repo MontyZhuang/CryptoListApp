@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@drawable/gradient"
     >
 
     <LinearLayout
@@ -14,8 +14,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center"
-        android:background="@color/black"
-        app:layout_constraintHeight_percent="0.1">
+        android:background="#4CAF50"
+        app:layout_constraintHeight_percent="0.075">
 
 
         <TextView
@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="10dp"
-        app:layout_constraintHeight_percent="0.8"
+        app:layout_constraintHeight_percent="0.825"
         app:layout_constraintTop_toBottomOf="@id/topLayout"
         app:layout_constraintLeft_toLeftOf="parent">
 
@@ -225,8 +225,9 @@
 
             </android.support.v7.widget.CardView>
 
-            <!-- 0,2 -->
+            <!-- 0,2 24hr change-->
             <android.support.v7.widget.CardView
+                android:id="@+id/percentChange24Box"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:elevation="10dp"
@@ -239,11 +240,38 @@
                 android:layout_rowWeight="1"
                 app:cardCornerRadius="10dp"
                 app:cardBackgroundColor="@color/white">
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+
+                        android:textColor="@color/black"
+                        android:id="@+id/percent24Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="24h % Change"/>
+
+                    <TextView
+                        android:textColor="@color/black"
+                        android:id="@+id/percent24Content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+
+                </LinearLayout>
 
             </android.support.v7.widget.CardView>
 
-            <!-- 1,2 -->
+            <!-- 1,2 7day change-->
             <android.support.v7.widget.CardView
+                android:id="@+id/percentChange7dBox"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:elevation="10dp"
@@ -256,6 +284,33 @@
                 android:layout_rowWeight="1"
                 app:cardCornerRadius="10dp"
                 app:cardBackgroundColor="@color/white">
+
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+
+                        android:textColor="@color/black"
+                        android:id="@+id/percent7dLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="7d % Change"/>
+
+                    <TextView
+                        android:textColor="@color/black"
+                        android:id="@+id/percent7dContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        />
+
+                </LinearLayout>
 
             </android.support.v7.widget.CardView>
 
@@ -278,7 +333,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add To Portfolio"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
