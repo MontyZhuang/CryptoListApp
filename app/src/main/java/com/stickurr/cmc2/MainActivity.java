@@ -1,15 +1,23 @@
 package com.stickurr.cmc2;
 
+import android.content.Context;
 import android.content.Intent;
 import android.media.Image;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +52,16 @@ public class MainActivity extends AppCompatActivity implements OnCoinListener, O
     private ArrayList<String> mImageUrls = new ArrayList<>();
     private ArrayList<String> mCoinRanks = new ArrayList<>();
     private ArrayList<String> mIDs = new ArrayList<>();
+    private ArrayList<String> mSymbols = new ArrayList<>();
+
+    private ArrayList<String> mCoinPercentChange2 = new ArrayList<>();
+    private ArrayList<String> mCoins2 = new ArrayList<>();
+    private ArrayList<String> mCoinPrices2 = new ArrayList<>();
+    private ArrayList<String> mImageUrls2 = new ArrayList<>();
+    private ArrayList<String> mCoinRanks2 = new ArrayList<>();
+    private ArrayList<String> mIDs2 = new ArrayList<>();
+
+
 
 
     @Override
@@ -54,11 +72,64 @@ public class MainActivity extends AppCompatActivity implements OnCoinListener, O
         swipeRefreshLayout = findViewById(R.id.swipe);
 
         swipeRefreshLayout.setOnRefreshListener(this);
+        final EditText searchinput = findViewById(R.id.searchinput);
+        final TextView title = findViewById(R.id.title);
 
-        //textView = findViewById(R.id.test);
 
-        ImageButton listbtn = findViewById(R.id.ListButton);
-        ImageButton portfoliobtn = findViewById(R.id.PortfolioButton);
+        final Button searchbtn =findViewById(R.id.searchbutton);
+        Button portfoliobtn = findViewById(R.id.PortfolioButton);
+
+        searchbtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchinput.setVisibility(View.VISIBLE);
+                searchbtn.setVisibility(View.GONE);
+                title.setVisibility(View.GONE);
+                searchinput.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(searchinput, InputMethodManager.SHOW_IMPLICIT);
+
+
+            }
+        });
+        // Click listener for search button on keyboard -------------------------------------------------------------------------
+        searchinput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    //performSearch();
+                    //Toast.makeText(MainActivity.this, searchinput.getText(), Toast.LENGTH_SHORT).show();
+                    String searchfor = searchinput.getText().toString().toLowerCase();
+                    ArrayList<Integer> searchfound = new ArrayList<>();
+                    boolean found = false;
+                    for(int i = 0; i < mSymbols.size(); i ++) {
+                        if (mSymbols.get(i).contains('"' +searchfor +'"')) {
+                            //Log.d("mytag", mIDs.get(i));
+                            searchfound.add(i);
+                            Intent intent = new Intent(MainActivity.this, CoinDetailsActivity.class);
+                            String id = mIDs.get(searchfound.get(0)).substring(1,mIDs.get(searchfound.get(0)).length() - 1);
+                            intent.putExtra("id", id);
+                            //Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+                            found =true;
+                            startActivity(intent);
+
+                        }
+                    }
+                    if(!found) {
+                        Toast.makeText(MainActivity.this, "Coin Not Found", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                    //boolean found = mSymbols.contains('"' +searchfor +'"');
+
+                    //Toast.makeText(MainActivity.this, searchfound.toString(), Toast.LENGTH_SHORT).show();
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
 
         portfoliobtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -68,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements OnCoinListener, O
 
             }
         });
-
 
 
         Retrofit retrofit = new Builder()
@@ -85,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements OnCoinListener, O
         getPosts(1);
 
         //initCoins();
+
     }
 
     private void getPosts(final int page) {
@@ -143,6 +214,9 @@ public class MainActivity extends AppCompatActivity implements OnCoinListener, O
                     //IDs'
                     mIDs.add(response.body().get(i).getAsJsonObject().get("id").toString());
 
+                    //Symbols
+                    mSymbols.add(response.body().get(i).getAsJsonObject().get("symbol").toString());
+
                 }
 
 
@@ -179,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements OnCoinListener, O
 
     private void initRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyler_view);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mCoins, this, mCoinPrices, mImageUrls, mCoinPercentChange, mIDs, this);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mCoins, this, mCoinPrices, mImageUrls, mCoinPercentChange, mIDs, mSymbols, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

@@ -36,6 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mPercentChange;
     private Context mContext;
     private OnCoinListener monCoinListener;
+    private ArrayList<String> mSymbols;
 
 
     // adds all the variables into the recycler view adapter
@@ -45,6 +46,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                ArrayList<String> mImages,
                                ArrayList<String> mPercentChange,
                                ArrayList<String> mIds,
+                               ArrayList<String> mSymbols,
                                OnCoinListener monCoinListener) {
 
         this.mIds = mIds;
@@ -54,6 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.mCoinPrices = mCoinPrices;
         this.mPercentChange = mPercentChange;
         this.monCoinListener = monCoinListener;
+        this.mSymbols = mSymbols;
     }
 
     // we override the default oncreateviewholder, and add our xml to make it looks not like the default, then return this layout

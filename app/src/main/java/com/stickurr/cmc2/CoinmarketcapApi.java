@@ -15,7 +15,6 @@ import retrofit2.http.QueryMap;
 public interface CoinmarketcapApi {
 
 
-    //@Headers("X-CMC_PRO_API_KEY : d6d5c05a-df75-4b22-af92-641b32dd306a")
     @GET("coins/markets")
     Call<JsonArray> getCoins (
           @QueryMap Map<String, String> parameters

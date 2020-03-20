@@ -1,5 +1,6 @@
 package com.stickurr.cmc2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CoinDetailsActivity extends AppCompatActivity {
 
     private CoinmarketcapApi coinmarketcapApi;
+    String mID = "";
 
 
     @Override
@@ -38,7 +40,12 @@ public class CoinDetailsActivity extends AppCompatActivity {
         addBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(CoinDetailsActivity.this, "You want to add? yes", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(CoinDetailsActivity.this, "You want to add? yes", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(CoinDetailsActivity.this, PortfolioActivity.class);
+
+                intent.putExtra("id", mID);
+                //Toast.makeText(this, id, Toast.LENGTH_SHORT).show();
+                startActivity(intent);
             }
         });
 
@@ -58,6 +65,7 @@ public class CoinDetailsActivity extends AppCompatActivity {
         if(getIntent().hasExtra("id")) {
             String id = getIntent().getStringExtra("id");
             //Toast.makeText(this, id + "e", Toast.LENGTH_SHORT).show();
+            mID = id;
             setInfo(id);
         }
 
