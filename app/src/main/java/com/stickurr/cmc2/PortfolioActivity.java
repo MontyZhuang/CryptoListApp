@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.RestrictTo;
@@ -28,7 +29,9 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.internal.$Gson$Preconditions;
+import com.stickurr.cmc2.PortfolioRecyclerAdapter.OnPortfolioCoinClickListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
@@ -40,6 +43,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -53,18 +57,22 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class PortfolioActivity extends AppCompatActivity {
+public class PortfolioActivity extends AppCompatActivity implements OnPortfolioCoinClickListener{
 
     private CoinmarketcapApi coinGeckoApi;
 
     private RecyclerView recyclerView;
     private PortfolioRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private ArrayList<String> pIDs = new ArrayList<>();
     Gson g = new Gson();
     private Float price = 0.00f;
     private Float amount = 0.0f;
     private String coinPriceToSend;
+
+    private boolean paused;
+    private int count;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,7 +82,7 @@ public class PortfolioActivity extends AppCompatActivity {
 
         Button coinviewbtn = findViewById(R.id.CoinviewButton2);
 
-        Retrofit retrofit = new Retrofit.Builder()
+        Retrofit retrofit2 = new Retrofit.Builder()
                 .baseUrl("http://api.coingecko.com/api/v3/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -83,7 +91,7 @@ public class PortfolioActivity extends AppCompatActivity {
 
 
         // makes the interface we have
-        coinGeckoApi = retrofit.create(CoinmarketcapApi.class);
+        coinGeckoApi = retrofit2.create(CoinmarketcapApi.class);
 
         coinviewbtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -95,23 +103,18 @@ public class PortfolioActivity extends AppCompatActivity {
 
         String internalData = (read("storage.json"));
         //Toast.makeText(this, internalData, Toast.LENGTH_SHORT).show();
-        if (internalData != null) {
+        if (internalData != null & internalData != "[]") {
             Log.d("DE", internalData.toString());
             JsonArray internalJson = new JsonParser().parse(internalData).getAsJsonArray();
             //String data = internalJson.getAsJsonArray().get(0).getAsJsonObject().get("name").toString();
 
-            initPortfolioRecyclerView(internalJson);
+            initPortfolioRecyclerViewData(internalJson);
 
             //Toast.makeText(this, internalJson.toString(), Toast.LENGTH_LONG).show();
 
         }
 
-
-
         getIncomingIntent();
-
-
-
 
     }
 
@@ -124,16 +127,29 @@ public class PortfolioActivity extends AppCompatActivity {
         builder.setView(customLayout);
         final EditText priceEnter = customLayout.findViewById(R.id.inputPrice);
         final EditText amountEnter = customLayout.findViewById(R.id.inputAmount);
-
-
+        priceEnter.requestFocus();
+        builder.setTitle("Add Coin To Portfolio?");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                price = Float.parseFloat(priceEnter.getText().toString());
-                amount = Float.parseFloat(amountEnter.getText().toString());
-                Toast.makeText(PortfolioActivity.this, price.toString(), Toast.LENGTH_SHORT).show();
-                writeData(id, price, amount);
+                Log.d("help", "empty " + priceEnter.getText().toString());
+                //Toast.makeText(PortfolioActivity.this, price.toString(), Toast.LENGTH_SHORT).show();
+                if (!priceEnter.getText().toString().equals("") && !amountEnter.getText().toString().equals("")) {
+                    price = Float.parseFloat(priceEnter.getText().toString());
+                    amount = Float.parseFloat(amountEnter.getText().toString());
+                    writeData(id, price, amount);
+                    Toast.makeText(PortfolioActivity.this, "Coin Added", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(PortfolioActivity.this, "Coin Not Added (No details present)", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        builder.setNegativeButton("BACK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
             }
         });
 
@@ -158,6 +174,8 @@ public class PortfolioActivity extends AppCompatActivity {
     }
 
     public void writeData(String id, float price, float amount) {
+
+
         boolean isFilePresent = isFilePresent(getApplicationContext(), "storage.json");
 
         JSONObject coinBuyData = new JSONObject();
@@ -170,14 +188,16 @@ public class PortfolioActivity extends AppCompatActivity {
         } catch (JSONException e) {
 
         }
+        boolean same = false;
 
         if(isFilePresent) {
             String jsonString = read( "storage.json");
             //Toast.makeText(this, jsonString, Toast.LENGTH_SHORT).show();
-
+            Log.d("hello", "what is read form the file stored raw    " + jsonString);
             JsonArray internalJson = new JsonParser().parse(jsonString).getAsJsonArray();
+            Log.d("hello", "what is read form the file stored raw    " + internalJson.toString());
 
-            boolean same = false;
+
             for(int i = 0; i < internalJson.size(); i ++) {
                 //Log.d("DE", (internalJson.get(i).getAsJsonObject().get("name").toString()).substring(1,internalJson.get(i).getAsJsonObject().get("name").toString().length() - 1));
                 //Toast.makeText(this, (internalJson.get(i).getAsJsonObject().get("name").toString()).substring(1,internalJson.get(i).getAsJsonObject().get("name").toString().length() - 1), Toast.LENGTH_SHORT).show();
@@ -188,7 +208,12 @@ public class PortfolioActivity extends AppCompatActivity {
             }
             String newToAdd = "";
             if (!(same)) {
-                newToAdd = ((jsonString.substring(0,jsonString.length()-1) + "," + coinBuyData.toString() + "]"));
+                if (jsonString.equals("[]")) {
+                    newToAdd = ((jsonString.substring(0,jsonString.length()-1) + coinBuyData.toString() + "]"));
+                } else {
+                    newToAdd = ((jsonString.substring(0, jsonString.length() - 1) + "," + coinBuyData.toString() + "]"));
+                    Log.d("hello", "what will be wrtiten into file    " + newToAdd);
+                }
 
                 try {
                     FileOutputStream fos = openFileOutput("storage.json",Context.MODE_PRIVATE);
@@ -241,7 +266,9 @@ public class PortfolioActivity extends AppCompatActivity {
             while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
             }
-            return sb.toString();
+            String ret = sb.toString();
+            ret = ret.replace("\\","");
+            return ret;
         } catch (FileNotFoundException fileNotFound) {
             return null;
         } catch (IOException ioException) {
@@ -249,59 +276,177 @@ public class PortfolioActivity extends AppCompatActivity {
         }
     }
 
-    private void initPortfolioRecyclerView(JsonArray jsonData) {
-        ArrayList<String> coinNameArray = new ArrayList<>();
-        ArrayList<Float> coinQuantityArray = new ArrayList<>();
-        ArrayList<Float> coinBPArray = new ArrayList<>();
-        ArrayList<String> coinCurrentPriceArray = new ArrayList<>();
+    private void initPortfolioRecyclerViewData(final JsonArray jsonData) {
+        final ArrayList<Float> coinQuantityArray = new ArrayList<>();
+        final ArrayList<Float> coinBPArray = new ArrayList<>();
+        // Arrays with data needed from api call
+        final ArrayList<String> coinImageArray = new ArrayList<>();
+        final ArrayList<String> coinCurrPriceArray = new ArrayList<>();
+        final ArrayList<String> coinNameArray = new ArrayList<>();
+        final ArrayList<String> coinIDArray = new ArrayList<>();
 
+        count = 0;
 
         for(int i = 0; i < jsonData.size(); i++ ) {
-            coinNameArray.add(jsonData.getAsJsonArray().get(i).getAsJsonObject().get("name").toString());
-            coinQuantityArray.add(Float.parseFloat(jsonData.getAsJsonArray().get(i).getAsJsonObject().get("amount").toString()));
-            coinBPArray.add(Float.parseFloat(jsonData.getAsJsonArray().get(i).getAsJsonObject().get("bp").toString()));
-            coinCurrentPriceArray.add(getCoinPrice(jsonData.getAsJsonArray().get(i).getAsJsonObject().get("name").toString()));
+            String currentID = jsonData.getAsJsonArray().get(i).getAsJsonObject().get("name").toString().substring(1,jsonData.getAsJsonArray().get(i).getAsJsonObject().get("name").toString().length() - 1);
+
+
+            //Toast.makeText(this, coinQuantityArray.get(i).toString(), Toast.LENGTH_SHORT).show();
+
+
+            // API CALL ////////////////////////////////////////////////////////////////////////////////////////////
+            Map<String, String> parameters = new HashMap<>();
+            parameters.put("id", currentID);
+            parameters.put("localisation", "false");
+            parameters.put("market_data", "true");
+            parameters.put("community_data", "false");
+            parameters.put("developer_data", "false");
+
+
+            //Toast.makeText(this, currentID + "hello", Toast.LENGTH_SHORT).show();
+            Call<JsonObject> call = coinGeckoApi.getDetails(currentID, parameters);
+
+
+            final int finalI = i;
+            call.enqueue(new Callback<JsonObject>() {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    if(!response.isSuccessful()) {
+                        //Toast.makeText(getApplicationContext(), "call has fucking died", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    count++;
+                    coinImageArray.add(response.body().getAsJsonObject().get("image").getAsJsonObject().get("large").toString().substring(1,response.body().getAsJsonObject().get("image").getAsJsonObject().get("small").toString().length() - 1));
+                    coinCurrPriceArray.add(response.body().getAsJsonObject().get("market_data").getAsJsonObject().get("current_price").getAsJsonObject().get("usd").toString());
+                    coinNameArray.add(response.body().getAsJsonObject().get("name").toString());
+                    coinIDArray.add(response.body().getAsJsonObject().get("id").toString());
+                    coinQuantityArray.add(Float.parseFloat(jsonData.getAsJsonArray().get(finalI).getAsJsonObject().get("amount").toString()));
+                    coinBPArray.add(Float.parseFloat(jsonData.getAsJsonArray().get(finalI).getAsJsonObject().get("bp").toString()));
+
+
+                    if (count == (jsonData.size())) {
+                        initPortfolioRecyclerView(coinNameArray, coinQuantityArray, coinBPArray, coinCurrPriceArray, coinImageArray, coinIDArray);
+                        //Toast.makeText(PortfolioActivity.this, "hello" + coinCurrPriceArray.get(0), Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                }
+            });
 
         }
-        Toast.makeText(this, "weve fucking got ehre", Toast.LENGTH_SHORT).show();
 
-        recyclerView = findViewById(R.id.CoinsRecyclerView);
-
-        layoutManager = new GridLayoutManager(this, 2);
-        mAdapter = new PortfolioRecyclerAdapter(coinNameArray, coinQuantityArray, coinBPArray, coinCurrentPriceArray);
-
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.setLayoutManager(layoutManager);
 
     }
 
-    private String getCoinPrice(String id) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("id", id);
-        parameters.put("localisation", "false");
-        parameters.put("market_data", "true");
-        parameters.put("community_data", "false");
-        parameters.put("developer_data", "false");
+    //inits recycler view and adds the other data to the other parts of the portfolio activity
+    private void initPortfolioRecyclerView(ArrayList<String> coinNames, ArrayList<Float> coinQuants, ArrayList<Float> coinBPs, ArrayList<String> coinCurrPrice, ArrayList<String> coinImages, ArrayList<String> coinIDs) {
+        //OTHER PARTS OF THE ACTIVITY STUFF----------------------------------
+        TextView totalVal = findViewById(R.id.portfolioOverallValue);
+        TextView totalProfit = findViewById(R.id.portfolioOverallProfit);
+
+        Float totalValv = 0.0f;
+        Float origValv = 0.0f;
+        for (int i =0; i < coinQuants.size(); i ++) {
+            totalValv += (Float.parseFloat(coinCurrPrice.get(i)) * coinQuants.get(i));
+            origValv += (coinBPs.get(i) * coinQuants.get(i));
+        }
+
+        if(totalValv < 0) {
+            totalVal.setText("-$" + String.valueOf(totalValv).substring(1,String.valueOf(totalValv).length() - 1));
+        } else {
+            totalVal.setText("$" + String.valueOf(totalValv));
+        }
+        if((totalValv - origValv) < 0) {
+            totalProfit.setText("-$" + String.valueOf(totalValv - origValv).substring(1,String.valueOf(totalValv - origValv).length() - 1));
+            totalProfit.setTextColor(Color.RED);
+        } else {
+            int green  = Color.parseColor("#009900");
+            totalProfit.setText("$" + String.valueOf(totalValv - origValv));
+            totalProfit.setTextColor(green);
+        }
 
 
-        Call<JsonObject> call = coinGeckoApi.getDetails(id, parameters);
+
+        //RECYCLER VIEW STUFF-----------------------------------------------
+        recyclerView = findViewById(R.id.CoinsRecyclerView);
+        Log.d("help", coinIDs.toString());
+        layoutManager = new GridLayoutManager(this, 2);
+        mAdapter = new PortfolioRecyclerAdapter(coinNames, coinQuants, coinBPs, coinCurrPrice, coinImages, coinIDs, this, this);
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    public void OnPortfolioCoinClick(final int position, final ArrayList<String> ids) {
+        //Toast.makeText(this, "I have been clicked", Toast.LENGTH_SHORT).show();
+        final String id = ids.get(position);
 
 
-        call.enqueue(new Callback<JsonObject>() {
+
+        AlertDialog.Builder builder = new Builder(PortfolioActivity.this, R.style.MyDialogTheme);
+
+        builder.setTitle("Delete Coin From Portfolio?");
+
+        builder.setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if(!response.isSuccessful()) {
-                    return;
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(PortfolioActivity.this, "fucking delete", Toast.LENGTH_SHORT).show();
+
+                String jsondata = read("storage.json");
+                JsonArray internalJson = new JsonParser().parse(jsondata).getAsJsonArray();
+
+                ArrayList<String> internalArray = new ArrayList<>();
+                for(int i = 0; i < internalJson.size(); i++) {
+                    internalArray.add(internalJson.get(i).toString());
                 }
-                coinPriceToSend = (response.body().getAsJsonObject().get("market_data").getAsJsonObject().get("current_price").getAsJsonObject().get("usd")).toString();
-            }
 
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
+                int pos = 0;
+                for(int i = 0; i < internalArray.size(); i++) {
+                    if(internalArray.get(i).contains(id)) {
+                        pos = i;
+                    }
+                }
+
+                internalArray.remove(pos);
+                String fileToSave = internalArray.toString();
+
+
+                Log.d("help", "array after removal" + internalArray.toString());
+
+                //fileToSave = fileToSave.replace("\\","");
+
+
+                //Log.d("hello", fileToSave);
+
+
+                try {
+                    FileOutputStream fos = openFileOutput("storage.json",Context.MODE_PRIVATE);
+                    fos.write(fileToSave.getBytes());
+                    fos.close();
+
+                    Toast.makeText(getApplicationContext(), "Coin Deleted", Toast.LENGTH_SHORT).show();
+                } catch (FileNotFoundException fileNotFound) {
+
+                } catch (IOException ioException) {
+
+                }
             }
         });
 
-        return coinPriceToSend;
+        builder.setNegativeButton("BACK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+
+        dialog.setCancelable(true);
+        dialog.show();
     }
+
 }

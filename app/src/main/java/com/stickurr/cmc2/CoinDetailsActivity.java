@@ -34,7 +34,7 @@ public class CoinDetailsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coin_details);
-        Toast.makeText(CoinDetailsActivity.this, mID, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(CoinDetailsActivity.this, mID, Toast.LENGTH_SHORT).show();
         Button addBtn = findViewById(R.id.addbtn);
 
         addBtn.setOnClickListener(new OnClickListener() {

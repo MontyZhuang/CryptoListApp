@@ -9,6 +9,15 @@
     >
 
     <TextView
+        android:id="@+id/ranking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text=""
+        />
+
+    <TextView
         android:id="@+id/portfolioCoinName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,10 +68,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/portfolioTotalValue"
-        app:layout_constraintRight_toLeftOf="@id/middleGuideline"
+        app:layout_constraintRight_toRightOf="@id/middleGuideline"
         android:text="value value"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:maxLength="6"
+        android:ellipsize="end"
+        android:maxLines="1"
 
         />
 
@@ -73,8 +85,11 @@
         app:layout_constraintTop_toBottomOf="@id/portfolioTotalProfit"
         android:text="profit value"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="10dp"
         app:layout_constraintLeft_toRightOf="@id/middleGuideline"
+        android:layout_marginLeft="10dp"
+        android:maxLength="8"
+        android:ellipsize="end"
+        android:maxLines="1"
 
         />
 
@@ -84,6 +99,57 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5"/>
+
+
+    <TextView
+        android:id="@+id/portfolioCoinsOwned"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/portfolioTotalValuev"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/middleGuideline"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="10dp"
+        android:text="No. Owned"/>
+
+    <TextView
+        android:id="@+id/portfolioCoinsBP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/portfolioTotalProfitv"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:text="Buy Price"/>
+
+    <TextView
+        android:id="@+id/portfolioCoinsOwnedv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/portfolioCoinsOwned"
+        app:layout_constraintRight_toRightOf="@id/middleGuideline"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="10dp"
+        android:text="no. val"
+        android:maxLength="8"
+        android:ellipsize="end"
+        android:maxLines="1"
+        />
+
+    <TextView
+        android:id="@+id/portfolioCoinsBPv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/portfolioCoinsBP"
+        app:layout_constraintLeft_toLeftOf="@id/middleGuideline"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="bp v"
+        android:layout_marginLeft="10dp"
+        android:maxLength="8"
+        android:ellipsize="end"
+        android:maxLines="1"
+        />
+
 
 
 
