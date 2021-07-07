@@ -1,4 +1,4 @@
-package com.stickurr.cmc2;
+package com.monty.cryptoapp;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +23,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.stickurr.cmc2.PortfolioRecyclerAdapter.OnPortfolioCoinClickListener;
+
+import com.monty.cryptoapp.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +46,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class PortfolioActivity extends AppCompatActivity implements OnPortfolioCoinClickListener{
+public class PortfolioActivity extends AppCompatActivity implements PortfolioRecyclerAdapter.OnPortfolioCoinClickListener {
 
     private CoinmarketcapApi coinGeckoApi;
 

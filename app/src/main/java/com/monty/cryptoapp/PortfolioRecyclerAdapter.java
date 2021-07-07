@@ -1,4 +1,4 @@
-package com.stickurr.cmc2;
+package com.monty.cryptoapp;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.monty.cryptoapp.R;
 
 import java.util.ArrayList;
 

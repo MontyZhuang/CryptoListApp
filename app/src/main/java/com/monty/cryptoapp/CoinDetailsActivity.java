@@ -1,4 +1,4 @@
-package com.stickurr.cmc2;
+package com.monty.cryptoapp;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
+import com.monty.cryptoapp.R;
 
 import java.util.HashMap;
 import java.util.Map;

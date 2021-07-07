@@ -1,4 +1,4 @@
-package com.stickurr.cmc2;
+package com.monty.cryptoapp;
 
 import android.content.Context;
 import android.content.Intent;
@@ -21,7 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
-import com.stickurr.cmc2.RecyclerViewAdapter.OnCoinListener;
+import com.monty.cryptoapp.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ import retrofit2.Retrofit;
 import retrofit2.Retrofit.Builder;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity implements OnCoinListener, OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements RecyclerViewAdapter.OnCoinListener, OnRefreshListener {
 
     // create an instance of the API interface
     private CoinmarketcapApi coinmarketcapApi;
