@@ -1,3 +1,5 @@
 # CryptoListApp
 
-Small crypto tracker app thing which utilises the CoinGecko API which isn't really that good but its free so yeah
+A crypto list app + a portfolio feature
+
+<img src="https://github.com/MontyZhuang/CryptoListApp/tree/master/readme_images" width="50%" height="50%">
