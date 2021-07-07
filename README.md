@@ -1,8 +1,9 @@
 # CryptoListApp
 
-A crypto list app + a portfolio feature
+A crypto list app + a portfolio feature using data from the coingecko api
 
-below are screenshots of all the different screens of the app
+below are screenshots of all the different screens of the app  
+the two different colored rectangles at bottom of app are for list and portfolio sections of the app 
 <p float="left">
 <img src="https://github.com/MontyZhuang/CryptoListApp/blob/master/readme_images/list.jpg" width="30%" height="30%">
 
